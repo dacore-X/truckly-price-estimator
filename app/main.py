@@ -1,7 +1,7 @@
 import logging
 
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 import pandas as pd
 
 from app.internal import helpers
@@ -13,7 +13,13 @@ from app.internal.model import delivery as ml
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(asctime)s %(message)s")
 
 # Create instance of FastAPI app
-app = FastAPI()
+app = FastAPI(
+    title="Price Estimator Service Documentation",
+    description="The Truckly delivery price prediction service provides an estimated order delivery cost based on "
+                "several factors, including the distance between the departure and destination points, the presence "
+                "of a loader and the type of delivery.",
+    version="1.0"
+)
 
 # Reading train data from file
 df_train = pd.read_csv("app/internal/model/train_df.csv").drop(columns='Unnamed: 0')
@@ -32,7 +38,7 @@ async def startup_event():
 
 
 # Endpoint for estimating price for delivery
-@app.get("/price")
+@app.post("/price", tags=["Price"])
 async def get_price(d: schema.Delivery):
     try:
         vec = helpers.convert_vector(d)  # converting input data to model vector
