@@ -7,7 +7,7 @@ import pandas as pd
 from app.internal import helpers
 from app.internal.schema import delivery as schema
 from app.internal.model import delivery as ml
-
+from fastapi.middleware.cors import CORSMiddleware
 
 # Setup logging config
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(asctime)s %(message)s")
@@ -19,6 +19,19 @@ app = FastAPI(
                 "several factors, including the distance between the departure and destination points, the presence "
                 "of a loader and the type of delivery.",
     version="1.0"
+)
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Reading train data from file
